@@ -4,6 +4,9 @@ import { NextResponse, NextRequest } from 'next/server'
 export async function proxy(request: NextRequest) {
     const cookie = await cookies();
     const isLogin = cookie.get("access_token");
+
+
+    
     const currentPath = request.nextUrl.pathname;
     // if not login then go to login page and keep the state of which page want to go
     if ((currentPath !== "login" && !isLogin)) {
