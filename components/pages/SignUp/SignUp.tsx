@@ -12,14 +12,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import { SubmitHandler } from "react-hook-form"
-import Link from "next/link"
 
 type Inputs = {
   email: string
   password: string
 }
 
-export default function Login() {
+export default function SignUp() {
   const {
     register,
     handleSubmit,
@@ -62,7 +61,7 @@ export default function Login() {
                 </Field>
 
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <Link href="/registration">Sign up</Link>
+                  Already have an account? <a href="/login">Log In</a>
                 </FieldDescription>
               </FieldGroup>
             </form>

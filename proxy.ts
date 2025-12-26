@@ -2,12 +2,17 @@ import { NextResponse, NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
     const isLogin = request.cookies.get("access_token");
-    const token=isLogin?.value
+    const token = isLogin?.value
 
     const currentPath = request.nextUrl.pathname;
     // if not login then go to login page and keep the state of which page want to go
     if ((currentPath !== "/login" && !isLogin)) {
-        return NextResponse.redirect(new URL('/login', request.url))
+        if (currentPath === "/registration") {
+            return NextResponse.next()
+
+        } else {
+            return NextResponse.redirect(new URL('/login', request.url))
+        }
     }
     // if login then go dashboard page and can't go to login page
     if ((currentPath === "/login" && isLogin)) {
@@ -20,8 +25,8 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next|favicon.ico|images|assets|public|api/public).*)',
-  ],
+    matcher: [
+        '/((?!_next|favicon.ico|images|assets|public|api/public).*)',
+    ],
 }
 
