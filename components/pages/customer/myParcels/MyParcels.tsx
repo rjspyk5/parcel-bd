@@ -1,11 +1,11 @@
 import React from 'react';
 
-const layout = () => {
+const MyParcels = () => {
     return (
         <div>
-            
+            my
         </div>
     );
 };
 
-export default layout;
+export default MyParcels;
