@@ -1,4 +1,3 @@
-"use client"
 import {
   Table,
   TableBody,
@@ -55,7 +54,7 @@ const invoices = [
   },
 ]
 
-export const MyParcels = ()=> {
+export const Users=()=> {
   return (
     <Table>
       <TableCaption>A list of your recent invoices.</TableCaption>
