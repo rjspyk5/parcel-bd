@@ -1,124 +1,71 @@
-'use client'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { SubmitHandler, useForm } from "react-hook-form"
+"use client";
 
-type Inputs = {
-  senderName: string
-  senderPhone: string
-  pickupAddress: string
-  receiverName: string
-  receiverPhone: string
-  deliveryAddress: string
-  parcelSize: string
-  paymentType: string
-  deliveryCharge: number
-}
+import dynamic from "next/dynamic";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import AddressSearch from "@/components/shared/AdressSearch/AdressSearch";
 
-const BookParcel = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Inputs>()
+const MapPicker = dynamic(() => import("@/components/shared/MapPicker/MapPicker"), {
+  ssr: false,
+});
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data)
-  }
+type Location = {
+  address: string;
+  lat: number;
+  lng: number;
+};
+
+export default function BookParcel() {
+  const { register, handleSubmit } = useForm();
+
+  const [pickup, setPickup] = useState<Location | null>(null);
+  const [delivery, setDelivery] = useState<Location | null>(null);
+
+  const onSubmit = (data: any) => {
+    console.log({
+      ...data,
+      pickup,
+      delivery,
+    });
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto">
+    <div className="max-w-3xl mx-auto space-y-6">
+      <h1 className="text-2xl font-bold">Book Parcel</h1>
 
-      <h2 className="text-2xl font-semibold mb-4">Book a Parcel</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Sender */}
+        <input
+          {...register("senderName")}
+          placeholder="Sender Name"
+          className="border px-3 py-2 rounded w-full"
+        />
 
-      {/* Sender Info */}
-      <div>
-        <label className="block mb-1">
-          Sender Name <span className="text-red-500">*</span>
-        </label>
-        <Input {...register("senderName", { required: true })} />
-        {errors.senderName && <span className="text-red-500 text-sm">Required</span>}
-      </div>
+        {/* Pickup */}
+        <div>
+          <label>Pickup Address</label>
 
-      <div>
-        <label className="block mb-1">
-          Sender Phone <span className="text-red-500">*</span>
-        </label>
-        <Input type="tel" {...register("senderPhone", { required: true })} />
-        {errors.senderPhone && <span className="text-red-500 text-sm">Required</span>}
-      </div>
+          <AddressSearch value={pickup} onSelect={setPickup} />
 
-      <div>
-        <label className="block mb-1">
-          Pickup Address <span className="text-red-500">*</span>
-        </label>
-        <Input {...register("pickupAddress", { required: true })} />
-        {errors.pickupAddress && <span className="text-red-500 text-sm">Required</span>}
-      </div>
+          <MapPicker value={pickup} onChange={setPickup} />
+        </div>
 
-      {/* Receiver Info */}
-      <div>
-        <label className="block mb-1">
-          Receiver Name <span className="text-red-500">*</span>
-        </label>
-        <Input {...register("receiverName", { required: true })} />
-        {errors.receiverName && <span className="text-red-500 text-sm">Required</span>}
-      </div>
+        {/* Delivery */}
+        <div>
+          <label>Delivery Address</label>
 
-      <div>
-        <label className="block mb-1">
-          Receiver Phone <span className="text-red-500">*</span>
-        </label>
-        <Input type="tel" {...register("receiverPhone", { required: true })} />
-        {errors.receiverPhone && <span className="text-red-500 text-sm">Required</span>}
-      </div>
+          <AddressSearch value={delivery} onSelect={setDelivery} />
 
-      <div>
-        <label className="block mb-1">
-          Delivery Address <span className="text-red-500">*</span>
-        </label>
-        <Input {...register("deliveryAddress", { required: true })} />
-        {errors.deliveryAddress && <span className="text-red-500 text-sm">Required</span>}
-      </div>
+          <MapPicker value={delivery} onChange={setDelivery} />
+        </div>
 
-      {/* Parcel */}
-      <div>
-        <label className="block mb-1">
-          Parcel Size <span className="text-red-500">*</span>
-        </label>
-        <Input placeholder="e.g., Small / Medium / Large" {...register("parcelSize", { required: true })} />
-        {errors.parcelSize && <span className="text-red-500 text-sm">Required</span>}
-      </div>
-
-      {/* Payment */}
-      <div>
-        <label className="block mb-1">
-          Payment Type <span className="text-red-500">*</span>
-        </label>
-        <select
-          className="border rounded px-3 py-2 w-full"
-          {...register("paymentType", { required: true })}
+        <button
+          type="submit"
+          className="bg-black text-white px-4 py-2 rounded"
         >
-          <option value="">Select</option>
-          <option value="cod">Cash on Delivery (COD)</option>
-          <option value="prepaid">Prepaid</option>
-        </select>
-        {errors.paymentType && <span className="text-red-500 text-sm">Required</span>}
-      </div>
-
-      <div>
-        <label className="block mb-1">
-          Delivery Charge <span className="text-red-500">*</span>
-        </label>
-        <Input type="number" {...register("deliveryCharge", { required: true })} />
-        {errors.deliveryCharge && <span className="text-red-500 text-sm">Required</span>}
-      </div>
-
-      <Button type="submit" className="mt-2">
-        Submit
-      </Button>
-    </form>
-  )
+          Submit
+        </button>
+      </form>
+    </div>
+  );
 }
-
-export default BookParcel
